@@ -31,8 +31,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main_P3.cpp">
-      <Filter>Archivos de origen</Filter>
+    <ClCompile Include="Main_Modelado.cpp">
+      <Filter>Archivos de origen\Shader</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
