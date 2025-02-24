@@ -1,3 +1,11 @@
+/*
+Práctica 3
+Martínez Pavón María Guadalupe
+318071280
+Fecha de entrega: 27-febrero-2025
+*/
+
+
 #include<iostream>
 
 //#define GLEW_STATIC
@@ -34,7 +42,7 @@ int main() {
 
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "Modelado geometrico", nullptr, nullptr);
+	GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "Práctica 4. María Guadalupe Martínez Pavón", nullptr, nullptr);
 
 	int screenWidth, screenHeight;
 
@@ -82,7 +90,7 @@ int main() {
 
 	// use with Perspective Projection
 	float vertices[] = {
-		-0.5f, -0.5f, 0.5f, 1.0f, 0.0f,0.0f,//Front
+	   -0.5f, -0.5f, 0.5f, 1.0f, 0.0f,0.0f,//Front
 		0.5f, -0.5f, 0.5f,  1.0f, 0.0f,0.0f,
 		0.5f,  0.5f, 0.5f,  1.0f, 0.0f,0.0f,
 		0.5f,  0.5f, 0.5f,  1.0f, 0.0f,0.0f,
@@ -198,40 +206,53 @@ int main() {
 		glBindVertexArray(VAO);
 
 		model = glm::mat4(1.0f);
-		//Tamaño de la superficie de la mesa 
-		model = glm::scale(model, glm::vec3(3.0f, 0.1f, 2.0f)); //Ancho, grosor, profundidad 
+		//Cabeza 
+		model = glm::scale(model, glm::vec3(1.5f, 0.9f, 0.7f)); //Ancho, grosor, profundidad 
 		model = glm::translate(model, glm::vec3(0.0f, 0.6f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-		
-		//PATA 1 
+
+		//Antena 
 		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(0.1f, 0.6f, 0.1f));//Tamaño de la pata 
-		model = glm::translate(model, glm::vec3(9.0f, -0.6f, 1.9f));//Posición de la pata 
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		
-		//PATA 2  
-		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(0.1f, 0.6f, 0.1f));//Tamaño de la pata 
-		model = glm::translate(model, glm::vec3(-9.0f, -0.6f, 1.9f));//Posición de la pata 
+		model = glm::scale(model, glm::vec3(0.2f, 0.8f, 0.1f));//Tamaño de la antena
+		model = glm::translate(model, glm::vec3(0.0f, 1.6f, 1.0f));//Posición de la antena
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		//PATA 3 
+		//Oreja 1 
 		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(0.1f, 0.6f, 0.1f));//Tamaño de la pata 
-		model = glm::translate(model, glm::vec3(-9.0f, -0.6f, -1.9f));//Posición de la pata 
+		model = glm::scale(model, glm::vec3(0.3f, 0.8f, 0.1f));//Tamaño de la oreja
+		model = glm::translate(model, glm::vec3(-3.0f, 1.4f, 2.0f));//Posición de la oreja
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		//PATA 4 
+		//Oreja  2 
 		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(0.1f, 0.6f, 0.1f));//Tamaño de la pata 
-		model = glm::translate(model, glm::vec3(9.0f, -0.6f, -1.9f));//Posición de la pata 
+		model = glm::scale(model, glm::vec3(0.3f, 0.8f, 0.1f));//Tamaño de la pata 
+		model = glm::translate(model, glm::vec3(3.0f, 1.4f, 2.0f));//Posición de la pata 
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
+		//Cuerpo 
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(1.2f, 0.9f, 0.5f));//Tamaño de la pata Ancho, grosor, profundidad 
+		model = glm::translate(model, glm::vec3(0.0f, -0.3f, 0.0f));//Posición del cuerpo
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		//Piernas
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(1.0f, 0.3f, 0.5f));//Tamaño de la pata Ancho, grosor, profundidad 
+		model = glm::translate(model, glm::vec3(0.0f, -2.5f, 0.0f));//Posición del cuerpo
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		//Mano 1 
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.2f, 0.8f, 0.2f));//Tamaño de la pata Ancho, grosor, profundidad 
+		model = glm::translate(model, glm::vec3(5.5f, 0.2f, 0.0f));//Posición del cuerpo
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		glBindVertexArray(0);
 
