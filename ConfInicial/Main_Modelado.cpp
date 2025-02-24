@@ -221,15 +221,15 @@ int main() {
 
 		//Oreja 1 
 		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(0.3f, 0.8f, 0.1f));//Tamaño de la oreja
-		model = glm::translate(model, glm::vec3(-3.0f, 1.0f, -1.0f));//Posición de la oreja
+		model = glm::scale(model, glm::vec3(0.2f, 0.8f, 0.1f));//Tamaño de la oreja
+		model = glm::translate(model, glm::vec3(-4.2f, 1.0f, -1.0f));//Posición de la oreja
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		//Oreja  2 
 		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(0.3f, 0.8f, 0.1f));//Tamaño de la pata 
-		model = glm::translate(model, glm::vec3(3.0f, 1.0f, -1.0f));//Posición de la pata 
+		model = glm::scale(model, glm::vec3(0.2f, 0.8f, 0.1f));//Tamaño de la pata 
+		model = glm::translate(model, glm::vec3(4.2f, 1.0f, -1.0f));//Posición de la pata 
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
@@ -249,10 +249,19 @@ int main() {
 
 		//Brazo 1 
 		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(0.2f, 0.6f, 0.2f));//Tamaño de la pata Ancho, grosor, profundidad 
-		model = glm::translate(model, glm::vec3(3.5f, -0.4f, 0.0f));//Posición del cuerpo
+		model = glm::scale(model, glm::vec3(0.2f, 0.5f, 0.1f));//Tamaño de la pata Ancho, grosor, profundidad 
+		model = glm::translate(model, glm::vec3(3.1f, -0.5f, -0.5f));//Posición del cuerpo
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		//Brazo 1 
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.2f, 0.5f, 0.1f));//Tamaño de la pata Ancho, grosor, profundidad 
+		model = glm::translate(model, glm::vec3(-3.1f, -0.5f, -0.5f));//Posición del cuerpo
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		//Ojo
 
 		glBindVertexArray(0);
 
