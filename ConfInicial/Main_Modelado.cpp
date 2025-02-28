@@ -91,6 +91,7 @@ int main() {
 
 	// use with Perspective Projection
 	float vertices[] = {
+		//-----Cabeza 
 	   -0.5f, -0.5f, 0.5f,  0.357f, 0.902f,0.282f,//Front
 		0.5f, -0.5f, 0.5f,  0.357f, 0.902f,0.282f,
 		0.5f,  0.5f, 0.5f,  0.357f, 0.902f,0.282f,
@@ -487,7 +488,7 @@ int main() {
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		//Brazo 2
+		//Mano 2
 		model = glm::mat4(1.0f);
 		model = glm::scale(model, glm::vec3(0.2f, 0.6f, 0.1f));//Tamaño del brazo Ancho, grosor, profundidad 
 		model = glm::translate(model, glm::vec3(-3.1f, -0.6f, -0.5f));//Posición del cuerpo
@@ -556,6 +557,7 @@ int main() {
 		model = glm::translate(model, glm::vec3(2.0f, -1.0f, 1.0f));//Posición del cuerpo
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 180, 216);
+
 
 		glBindVertexArray(0);
 
