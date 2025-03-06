@@ -270,7 +270,7 @@ int main() {
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		// Dedo 2 A(Medio)
+		//Dedo 2 A(Medio)
 		model = glm::translate(modelTemp2, glm::vec3(0.25f, 0.35f, 0.18f));
 		model = glm::rotate(model, glm::radians(dedo1), glm::vec3(0.0f, 0.0, 1.0f));
 		modelTemp = model = glm::translate(model, glm::vec3(0.75f, 0.0f, 0.0f));
@@ -280,7 +280,8 @@ int main() {
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		//Dedo 2B
+		
+		// Dedo 2B
 		model = glm::translate(modelTemp, glm::vec3(0.75f, 0.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(dedo2), glm::vec3(0.0f, 0.0, 1.0f));
 		modelTemp = model = glm::translate(model, glm::vec3(0.5f, 0.0f, 0.0f));
@@ -290,7 +291,7 @@ int main() {
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		// Dedo 2 C
+		//Dedo 2 C
 		model = glm::translate(modelTemp, glm::vec3(0.5f, 0.0f, 0.0f)); 
 		model = glm::rotate(model, glm::radians(dedo3), glm::vec3(0.0f, 0.0, 1.0f)); 
 		model = glm::translate(model, glm::vec3(0.35f, 0.0f, 0.0f)); 
@@ -300,7 +301,7 @@ int main() {
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		// Dedo 3 A (Anular)
+		 //Dedo 3 A (Anular)
 		model = glm::translate(modelTemp2, glm::vec3(0.25f, 0.35f, -0.1f));
 		model = glm::rotate(model, glm::radians(dedo1), glm::vec3(0.0f, 0.0, 1.0f));
 		modelTemp = model = glm::translate(model, glm::vec3(0.7f, 0.0f, 0.0f));
@@ -310,7 +311,7 @@ int main() {
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		// Dedo 3 B
+		 // Dedo 3 B
 		model = glm::translate(modelTemp, glm::vec3(0.7f, 0.0f, 0.0f)); 
 		model = glm::rotate(model, glm::radians(dedo2), glm::vec3(0.0f, 0.0, 1.0f)); 
 		modelTemp = model = glm::translate(model, glm::vec3(0.45f, 0.0f, 0.0f)); 
@@ -320,7 +321,7 @@ int main() {
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		// Dedo 3 C
+		//Dedo 3 C
 		model = glm::translate(modelTemp, glm::vec3(0.45f, 0.0f, 0.0f)); 
 		model = glm::rotate(model, glm::radians(dedo3), glm::vec3(0.0f, 0.0, 1.0f)); 
 		model = glm::translate(model, glm::vec3(0.3f, 0.0f, 0.0f)); 
@@ -350,7 +351,7 @@ int main() {
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		// Dedo 4 C 
+		//Dedo 4 C 
 		model = glm::translate(modelTemp, glm::vec3(0.35f, 0.0f, 0.0f)); 
 		model = glm::rotate(model, glm::radians(dedo3), glm::vec3(0.0f, 0.0, 1.0f)); 
 		model = glm::translate(model, glm::vec3(0.25f, 0.0f, 0.0f)); 
@@ -360,7 +361,7 @@ int main() {
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		// PULGAR A
+		//PULGAR A
 		model = glm::translate(modelTemp2, glm::vec3(0.1f, -0.2f, 0.5f)); 
 		model = glm::rotate(model, glm::radians(dedo1), glm::vec3(0.0f, 0.0, 1.0f)); 
 		modelTemp = model = glm::translate(model, glm::vec3(0.4f, 0.0f, 0.0f)); 
@@ -370,8 +371,9 @@ int main() {
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
+		//Dedo 5 B 
 		model = glm::translate(modelTemp, glm::vec3(0.4f, 0.0f, 0.0f)); 
-		model = glm::rotate(model, glm::radians(dedo1), glm::vec3(0.0f, 0.0, 1.0f)); 
+		model = glm::rotate(model, glm::radians(dedo2), glm::vec3(0.0f, 0.0, 1.0f)); 
 		model = glm::translate(model, glm::vec3(0.3f, 0.0f, 0.0f)); 
 		model = glm::scale(model, glm::vec3(0.6f, 0.25f, 0.25f));
 		color = glm::vec3(1.0f, 0.0f, 1.0f);
@@ -392,50 +394,58 @@ int main() {
 	return EXIT_SUCCESS;
  }
 
- void Inputs(GLFWwindow *window) {
-	 if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)  //GLFW_RELEASE
-		 glfwSetWindowShouldClose(window, true);
-	 if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		 movX += 0.08f;
-	 if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		 movX -= 0.08f;
-	 if (glfwGetKey(window,GLFW_KEY_UP) == GLFW_PRESS)
-		 movY += 0.08f;
-	 if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-		 movY -= 0.08f;
-	 if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		 movZ -= 0.08f;
-	 if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		 movZ += 0.08f;
-	 if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-		 rot += 0.18f;
-	 if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-		 rot -= 0.18f;
-	 if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
-		 hombro += 0.18f;
-	 if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
-		 hombro -= 0.18f;
-	 if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-		 codo += 0.18f;
-	 if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
-		 codo -= 0.18f;
-	 if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
-		 muñeca += 0.18f;
-	 if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
-		 muñeca -= 0.18f;
-	 if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
-		 dedo1 += 0.18f;
-	 if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
-		 dedo1 -= 0.18f;
-	 if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
-		 dedo2 += 0.18f;
-	 if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
-		 dedo2 -= 0.18f;
-	 if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
-		 dedo3 += 0.18f;
-	 if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
-		 dedo3 -= 0.18f;
- }
+void Inputs(GLFWwindow* window) {
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)  //GLFW_RELEASE
+		glfwSetWindowShouldClose(window, true);
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		movX += 0.08f;
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		movX -= 0.08f;
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+		movY += 0.08f;
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		movY -= 0.08f;
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		movZ -= 0.08f;
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		movZ += 0.08f;
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+		rot += 0.18f;
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		rot -= 0.18f;
+	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+		hombro += 0.18f;
+	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+		hombro -= 0.18f;
+	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
+		codo += 0.18f;
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
+		codo -= 0.18f;
+	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
+		muñeca += 0.18f;
+	if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
+		muñeca -= 0.18f;
+	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
+		if (dedo1 < 45.0f) { dedo1 += 0.5f; }
+		else { dedo1 += 0.0f; }
+	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
+		if (dedo1 > -35.f) { dedo1 -= 0.5f; }
+		else { dedo1 -= 0.0f; }
+	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+		if (dedo2 < 0.0f) { dedo2 += 0.5f; }
+		else { dedo2 += 0.0f; }
+	if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
+		if (dedo2 > -90.f) { dedo2 -= 0.5f; }
+		else { dedo2 -= 0.0f; }
+	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+		dedo3 += 0.18f;
+	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+		dedo3 -= 0.18f;
+	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+		if (dedo3 < 30.0f) { dedo3 += 0.5f; } 
+		else { dedo3 += 0.0f; }
 
-
-
+	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+		if (dedo3 > 0.0f) { dedo3 -= 0.5f; } 
+		else { dedo3 -= 0.0f; }
+}
