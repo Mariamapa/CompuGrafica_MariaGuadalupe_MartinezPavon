@@ -101,6 +101,8 @@ int main( )
     Shader shader( "Shader/modelLoading.vs", "Shader/modelLoading.frag" );
     
     // Load models
+    Model dog((char*)"Models/RedDog.obj");
+    Model cat((char*)"Cat/12221_Cat_v1_l3.obj");
     glm::mat4 projection = glm::perspective( camera.GetZoom( ), ( float )SCREEN_WIDTH/( float )SCREEN_HEIGHT, 0.1f, 100.0f );
     
   
@@ -130,7 +132,7 @@ int main( )
         // Draw the loaded model
         glm::mat4 model(1);
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        
+        cat.Draw(shader);
 
         // Swap the buffers
         glfwSwapBuffers( window );
