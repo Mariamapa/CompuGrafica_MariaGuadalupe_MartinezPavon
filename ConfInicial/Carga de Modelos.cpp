@@ -102,8 +102,8 @@ int main( )
     
     // Load models
     Model dog((char*)"Models/RedDog.obj");
-    Model sillon((char*)"sillon/uploads_files_2585582_SillónJulia.obj");
-
+    Model sillon((char*)"sillon/sillon.obj");
+    Model florero((char*)"florero/3d-model.obj");
     glm::mat4 projection = glm::perspective( camera.GetZoom( ), ( float )SCREEN_WIDTH/( float )SCREEN_HEIGHT, 0.1f, 100.0f );
     
   
@@ -135,8 +135,19 @@ int main( )
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         dog.Draw(shader);
 
-        model = glm::translate(model, glm::vec3(-3.6f, 1.0f, 1.1f));
-        model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
+        model = glm::translate(model, glm::vec3(0.0f, -0.2f, -1.3f));
+        model = glm::scale(model, glm::vec3(0.015f, 0.015f, 0.015f));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        sillon.Draw(shader);
+
+        model = glm::translate(model, glm::vec3(-70.0f, -0.2f, -1.3f));
+        model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        florero.Draw(shader);
+
+        model = glm::translate(model, glm::vec3(-90.0f, -0.2f, 1.0f));
+        model = glm::rotate(model,90.0f, glm::vec3(0.0f, 90.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         sillon.Draw(shader);
 
