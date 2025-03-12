@@ -1,4 +1,4 @@
-/* Previo 6. Carga de modelos 3D y Cámara sintética en OpenGL
+/* Práctica 6. Carga de modelos 3D y Cámara sintética en OpenGL
 María Guadalupe Matínez Pavón 
 318071280
 Fecha de entrega: 09 marzo de 2025 
@@ -102,7 +102,8 @@ int main( )
     
     // Load models
     Model dog((char*)"Models/RedDog.obj");
-    Model cat((char*)"Cat/12221_Cat_v1_l3.obj");
+    Model sillon((char*)"sillon/uploads_files_2585582_SillónJulia.obj");
+
     glm::mat4 projection = glm::perspective( camera.GetZoom( ), ( float )SCREEN_WIDTH/( float )SCREEN_HEIGHT, 0.1f, 100.0f );
     
   
@@ -132,7 +133,12 @@ int main( )
         // Draw the loaded model
         glm::mat4 model(1);
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        cat.Draw(shader);
+        dog.Draw(shader);
+
+        model = glm::translate(model, glm::vec3(-3.6f, 1.0f, 1.1f));
+        model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        sillon.Draw(shader);
 
         // Swap the buffers
         glfwSwapBuffers( window );
