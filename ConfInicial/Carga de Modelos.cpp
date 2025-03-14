@@ -104,7 +104,8 @@ int main()
     Model dog((char*)"Models/RedDog.obj");
     Model sillon((char*)"sillon/sillon.obj");
     Model florero((char*)"florero/3d-model.obj");
-    Model mueble((char*)"mueble/mueble.obj");
+    Model gabinete((char*)"gabinete/20359_Cabinet_Bookcase_v1_Texture.obj");
+    Model refri((char*)"refrigerador/11646_Refrigerator_v1_l3.obj");
     glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
 
@@ -146,10 +147,18 @@ int main()
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         florero.Draw(shader);
 
-        model = glm::translate(model, glm::vec3(10.0f, -0.2f, 1.3f));
-        model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
+       
+        model = glm::translate(model, glm::vec3(65.0f, -0.5f, -1.3f));
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(3.5f, 3.5f, 3.5f));
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        mueble.Draw(shader);
+        gabinete.Draw(shader);
+
+        model = glm::translate(model, glm::vec3(-20.0f, -10.0f, 1.0f));
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::scale(model, glm::vec3(0.035f, 0.035f, 0.035f));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        refri.Draw(shader);
 
 
         // Swap the buffers
