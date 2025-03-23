@@ -1,0 +1,31 @@
+# 3ds Max Wavefront OBJ Exporter v0.99 - (c)2007 guruware
+# File Created: 23.03.2025 12:45:55
+
+newmtl 12161_Cat_v1_L2_12161_Cat
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.0900 0.0900 0.0900
+	Tr 0.0000
+	d 1.0000
+	Tf 1.0000 1.0000 1.0000
+	Pr 0.9000
+	Pm 0.0000
+	Pc 0.0000
+	Pcr 0.0000
+	Ni 1.5000
+	Ke 0.0000 0.0000 0.0000
+	illum 2
+	map_Kd C:\Users\lupit\OneDrive\Escritorio\CompuGrafica_MariaGuadalupe_MartinezPavon\ConfInicial\animal\12261_Cat_diffuse.jpg
+
+newmtl 12161_Cat_v1_L2_12161_Cat_mustache
+	Kd 0.5059 0.5098 0.4980
+	Ks 0.0900 0.0900 0.0900
+	Tr 0.0000
+	d 1.0000
+	Tf 1.0000 1.0000 1.0000
+	Pr 0.9000
+	Pm 0.0000
+	Pc 0.0000
+	Pcr 0.0000
+	Ni 1.5000
+	Ke 0.0000 0.0000 0.0000
+	illum 2
