@@ -106,6 +106,13 @@ int main()
 
     // Load models
     Model dog((char*)"Models/RedDog.obj");
+    Model sillon((char*)"sillon/sillon.obj");
+    Model florero((char*)"florero/3d-model.obj");
+    Model gabinete((char*)"gabinete/20359_Cabinet_Bookcase_v1_Texture.obj");
+    Model refri((char*)"refrigerador/11646_Refrigerator_v1_l3.obj");
+    Model table((char*)"table/10256_TV_Cabinet_v1_max2011.obj");
+    Model moon((char*)"moon/10467_Cratered_Moon_v2_Iterations-2.obj");
+    Model sun((char*)"Sun/13913_Sun_v2_l3.obj");
     glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
     float vertices[] = {
@@ -219,8 +226,8 @@ int main()
 
 
         // Set lights properties
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"),0.3f, 0.3f, 0.3f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.3f, 0.3f, 0.3f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 1.0f, 1.0f, 1.0f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.0f, 0.0f, 0.0f);
         glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 0.0f, 0.0f, 0.0f);
 
 
@@ -244,9 +251,47 @@ int main()
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         glBindVertexArray(VAO);
         dog.Draw(lightingShader);
-        //glDrawArrays(GL_TRIANGLES, 0, 36);
-        
+    
+        model = glm::translate(model, glm::vec3(0.0f, -0.2f, -1.3f));
+        model = glm::scale(model, glm::vec3(0.015f, 0.015f, 0.015f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        sillon.Draw(lightingShader);
+
+
+        model = glm::translate(model, glm::vec3(-70.0f, -0.2f, -1.3f));
+        model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        florero.Draw(lightingShader);
+
+
+        model = glm::translate(model, glm::vec3(65.0f, -0.5f, -1.3f));
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(3.5f, 3.5f, 3.5f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        gabinete.Draw(lightingShader);
+
+        model = glm::translate(model, glm::vec3(-20.0f, -10.0f, 0.8f));
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::scale(model, glm::vec3(0.035f, 0.035f, 0.035f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        refri.Draw(lightingShader);
+
+
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 2.0f));
+        model = glm::translate(model, glm::vec3(-250.0f, 450.0f, -40.8f));
+        model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        table.Draw(lightingShader);
+
+    
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(150.0f, 150.0f, 150.0f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        moon.Draw(lightingShader);
+
+ 
         glBindVertexArray(0);
+
 
 
 
