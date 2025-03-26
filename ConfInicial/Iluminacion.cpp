@@ -43,11 +43,13 @@ bool firstMouse = true;
 
 // Light attributes
 glm::vec3 lightPos(0.5f, 0.5f, 2.5f);
+glm::vec3 secondLightPos(0.8f, 0.8f, 2.5f);
 float movelightPos = 0.0f;
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
 float rot = 0.0f;
 bool activanim = false;
+
 
 int main()
 {
@@ -223,17 +225,30 @@ int main()
         GLint viewPosLoc = glGetUniformLocation(lightingShader.Program, "viewPos");
         glUniform3f(lightPosLoc, lightPos.x + movelightPos, lightPos.y + movelightPos, lightPos.z + movelightPos);
         glUniform3f(viewPosLoc, camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.position"),
+            secondLightPos.x, secondLightPos.y, secondLightPos.z);
+ 
 
 
         // Set lights properties
         glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 1.0f, 1.0f, 1.0f);
         glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.0f, 0.0f, 0.0f);
         glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 0.0f, 0.0f, 0.0f);
+        
 
 
         glm::mat4 view = camera.GetViewMatrix();
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
+
+        // Segunda luz
+        GLint light2PosLoc = glGetUniformLocation(lightingShader.Program, "light2.position");
+        glUniform3f(light2PosLoc, secondLightPos.x, secondLightPos.y, secondLightPos.z);
+
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.ambient"), 0.5f, 0.5f, 0.5f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.diffuse"), 1.0f, 1.0f, 1.0f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.specular"), 0.0f, 0.0f, 0.0f);
+
 
         // Set material properties
         glUniform3f(glGetUniformLocation(lightingShader.Program, "material.ambient"), 0.5f, 0.5f, 0.5f);
@@ -307,6 +322,18 @@ int main()
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
 
+        // Segunda lámpara
+        glm::mat4 lampModel2 = glm::mat4(1.0f);
+        lampModel2 = glm::translate(lampModel2, secondLightPos);
+        lampModel2 = glm::scale(lampModel2, glm::vec3(0.3f));
+        glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "model"), 1, GL_FALSE, glm::value_ptr(lampModel2));
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+
+
+
+
         // Swap the buffers
         glfwSwapBuffers(window);
     }
@@ -373,14 +400,22 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 
     if (keys[GLFW_KEY_O])
     {
-       
         movelightPos += 0.1f;
     }
 
     if (keys[GLFW_KEY_L])
     {
-        
         movelightPos -= 0.1f;
+    }
+
+    if (keys[GLFW_KEY_I])
+    {
+        secondLightPos.y += 0.1f; // sube la luz 2
+    }
+
+    if (keys[GLFW_KEY_K])
+    {
+        secondLightPos.y -= 0.1f; // baja la luz 2
     }
 
 
