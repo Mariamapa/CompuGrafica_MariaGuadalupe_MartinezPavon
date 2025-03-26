@@ -1,5 +1,5 @@
 /* Materiales e Iluminación en OpenGL               Martínez Pavón María Guadalupe 
-Fecha de entrega: 23 marzo 2025                               318071280
+Fecha de entrega: 26 marzo 2025                               318071280
 */
 
 // Std. Includes
@@ -221,6 +221,17 @@ int main()
 
 
         lightingShader.Use();
+        // Movimiento parabólico del Sol y la Luna
+        float time = glfwGetTime();
+
+        // Sol: se mueve de izquierda a derecha en parábola
+        lightPos.x = cos(time) * 10.0f;
+        lightPos.y = sin(time) * 5.0f;
+
+        // Luna: misma trayectoria, pero opuesta
+        secondLightPos.x = -cos(time) * 10.0f;
+        secondLightPos.y = -sin(time) * 5.0f;
+
         GLint lightPosLoc = glGetUniformLocation(lightingShader.Program, "light.position");
         GLint viewPosLoc = glGetUniformLocation(lightingShader.Program, "viewPos");
         glUniform3f(lightPosLoc, lightPos.x + movelightPos, lightPos.y + movelightPos, lightPos.z + movelightPos);
