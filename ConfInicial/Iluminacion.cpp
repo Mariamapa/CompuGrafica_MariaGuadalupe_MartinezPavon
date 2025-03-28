@@ -1,5 +1,6 @@
-/* Materiales e Iluminación en OpenGL               Martínez Pavón María Guadalupe 
-Fecha de entrega: 26 marzo 2025                               318071280
+
+/*Práctica 8.  Materiales e Iluminación en OpenGL               Martínez Pavón María Guadalupe
+Fecha de entrega: 28 marzo 2025                               318071280
 */
 
 // Std. Includes
@@ -65,7 +66,7 @@ int main()
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
     // Create a GLFWwindow object that we can use for GLFW's functions
-    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Materiales e Iluminacion. Maria Guadalupe Martinez Pavon ", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Práctica 8. Maria Guadalupe Martinez Pavon ", nullptr, nullptr);
 
     if (nullptr == window)
     {
@@ -223,7 +224,7 @@ int main()
 
 
         lightingShader.Use();
-   
+
         // Sol: se mueve de izquierda a derecha en parábola
         lightPos.x = cos(reloj) * 10.0f;
         lightPos.y = sin(reloj) * 10.0f;
@@ -238,7 +239,7 @@ int main()
         glUniform3f(viewPosLoc, camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
         glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.position"),
             secondLightPos.x, secondLightPos.y, secondLightPos.z);
- 
+
 
 
         // Set lights properties
@@ -284,7 +285,7 @@ int main()
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         glBindVertexArray(VAO);
         dog.Draw(lightingShader);
-    
+
         model = glm::translate(model, glm::vec3(0.0f, -0.2f, -1.3f));
         model = glm::scale(model, glm::vec3(0.015f, 0.015f, 0.015f));
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
@@ -317,19 +318,26 @@ int main()
         table.Draw(lightingShader);
 
 
-
-
         lampshader.Use();
         glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos + movelightPos);
-        model = glm::scale(model, glm::vec3(0.3f));
-        glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        if (activador == 1) {
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, lightPos + movelightPos);
+            model = glm::scale(model, glm::vec3(0.6f));
+            glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+            sun.Draw(lampshader);
+        }
+        else {
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, lightPos + movelightPos);
+            model = glm::scale(model, glm::vec3(0.1f));
+            glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+            moon.Draw(lampshader);
+        }
         glBindVertexArray(0);
-        
+
 
         // Swap the buffers
         glfwSwapBuffers(window);
