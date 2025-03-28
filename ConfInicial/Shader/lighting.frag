@@ -72,4 +72,3 @@ void main()
     vec3 result = ambient1 + diffuse1 + specular1 + ambient2 + diffuse2 + specular2;
     color = vec4(result, 1.0);
 }
-

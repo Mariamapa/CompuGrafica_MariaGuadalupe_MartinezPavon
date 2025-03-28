@@ -35,7 +35,7 @@ void DoMovement();
 
 
 // Camera
-Camera camera(glm::vec3(0.0f, 0.0f, 0.0f));
+Camera camera(glm::vec3(0.0f, 2.0f, 10.0f));  // Mueve la cámara más lejos
 bool keys[1024];
 GLfloat lastX = 400, lastY = 300;
 bool firstMouse = true;
@@ -47,6 +47,8 @@ glm::vec3 secondLightPos(0.8f, 0.8f, 2.5f);
 float movelightPos = 0.0f;
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
+float reloj = 0.0f;
+float activador = 0.0f;
 float rot = 0.0f;
 bool activanim = false;
 
@@ -113,8 +115,8 @@ int main()
     Model gabinete((char*)"gabinete/20359_Cabinet_Bookcase_v1_Texture.obj");
     Model refri((char*)"refrigerador/11646_Refrigerator_v1_l3.obj");
     Model table((char*)"table/10256_TV_Cabinet_v1_max2011.obj");
-    Model moon((char*)"moon/10467_Cratered_Moon_v2_Iterations-2.obj");
-    Model sun((char*)"Sun/13913_Sun_v2_l3.obj");
+    Model moon((char*)"Moon/Luna.obj");
+    Model sun((char*)"sun/Sol.obj");
     glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
     float vertices[] = {
@@ -188,7 +190,7 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 
-    image = stbi_load("Models/Texture_albedo.jpg", &textureWidth, &textureHeight, &nrChannels, 0);
+    /*image = stbi_load("Models/Texture_albedo.jpg", &textureWidth, &textureHeight, &nrChannels, 0);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     glGenerateMipmap(GL_TEXTURE_2D);
     if (image)
@@ -200,7 +202,7 @@ int main()
     {
         std::cout << "Failed to load texture" << std::endl;
     }
-    stbi_image_free(image);
+    stbi_image_free(image);*/
 
 
     // Game loop
@@ -221,16 +223,14 @@ int main()
 
 
         lightingShader.Use();
-        // Movimiento parabólico del Sol y la Luna
-        float time = glfwGetTime();
-
+   
         // Sol: se mueve de izquierda a derecha en parábola
-        lightPos.x = cos(time) * 10.0f;
-        lightPos.y = sin(time) * 5.0f;
+        lightPos.x = cos(reloj) * 10.0f;
+        lightPos.y = sin(reloj) * 10.0f;
 
         // Luna: misma trayectoria, pero opuesta
-        secondLightPos.x = -cos(time) * 10.0f;
-        secondLightPos.y = -sin(time) * 5.0f;
+        secondLightPos.x = -cos(reloj) * 10.0f;
+        secondLightPos.y = -sin(reloj) * 10.0f;
 
         GLint lightPosLoc = glGetUniformLocation(lightingShader.Program, "light.position");
         GLint viewPosLoc = glGetUniformLocation(lightingShader.Program, "viewPos");
@@ -242,23 +242,30 @@ int main()
 
 
         // Set lights properties
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 1.0f, 1.0f, 1.0f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.0f, 0.0f, 0.0f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 0.0f, 0.0f, 0.0f);
-        
-
+         // Set lights properties
+        if (reloj < 3.1 && reloj > 0 && activador == 1) {
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 10.0f, 5.0f, 2.0f);
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.2f, 0.7f, 0.4f);
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 0.3f, 0.6f, 0.4f);
+        }
+        else {
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 1.5f, 1.5f, 2.0f);
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.1f, 1.05f, 1.1f);
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 0.4f, 0.9f, 1.0f);
+        }
 
         glm::mat4 view = camera.GetViewMatrix();
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
+
         // Segunda luz
-        GLint light2PosLoc = glGetUniformLocation(lightingShader.Program, "light2.position");
+        /*GLint light2PosLoc = glGetUniformLocation(lightingShader.Program, "light2.position");
         glUniform3f(light2PosLoc, secondLightPos.x, secondLightPos.y, secondLightPos.z);
 
         glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.ambient"), 0.5f, 0.5f, 0.5f);
         glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.diffuse"), 1.0f, 1.0f, 1.0f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.specular"), 0.0f, 0.0f, 0.0f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.specular"), 0.0f, 0.0f, 0.0f);*/
 
 
         // Set material properties
@@ -301,23 +308,13 @@ int main()
         model = glm::scale(model, glm::vec3(0.035f, 0.035f, 0.035f));
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         refri.Draw(lightingShader);
-
+        glBindVertexArray(0);
 
         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 2.0f));
         model = glm::translate(model, glm::vec3(-250.0f, 450.0f, -40.8f));
         model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         table.Draw(lightingShader);
-
-    
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(150.0f, 150.0f, 150.0f));
-        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        moon.Draw(lightingShader);
-
- 
-        glBindVertexArray(0);
-
 
 
 
@@ -332,18 +329,7 @@ int main()
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
-
-        // Segunda lámpara
-        glm::mat4 lampModel2 = glm::mat4(1.0f);
-        lampModel2 = glm::translate(lampModel2, secondLightPos);
-        lampModel2 = glm::scale(lampModel2, glm::vec3(0.3f));
-        glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "model"), 1, GL_FALSE, glm::value_ptr(lampModel2));
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
-
-
-
+        
 
         // Swap the buffers
         glfwSwapBuffers(window);
@@ -355,6 +341,7 @@ int main()
     glfwTerminate();
     return 0;
 }
+
 
 
 // Moves/alters the camera positions based on user input
@@ -409,27 +396,17 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
         }
     }
 
-    if (keys[GLFW_KEY_O])
+    if (reloj < 3 && (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS))
     {
-        movelightPos += 0.1f;
+        activador = 1.0f;
+        reloj += 0.1f;
     }
 
-    if (keys[GLFW_KEY_L])
+    if (reloj > 0 && (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS))
     {
-        movelightPos -= 0.1f;
+        activador = 0.0f;
+        reloj -= 0.1f;
     }
-
-    if (keys[GLFW_KEY_I])
-    {
-        secondLightPos.y += 0.1f; // sube la luz 2
-    }
-
-    if (keys[GLFW_KEY_K])
-    {
-        secondLightPos.y -= 0.1f; // baja la luz 2
-    }
-
-
 }
 
 void MouseCallback(GLFWwindow* window, double xPos, double yPos)
@@ -449,5 +426,3 @@ void MouseCallback(GLFWwindow* window, double xPos, double yPos)
 
     camera.ProcessMouseMovement(xOffset, yOffset);
 }
-
-
