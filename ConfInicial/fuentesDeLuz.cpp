@@ -1,6 +1,6 @@
 /*Fuentes de Luz en OpenGL : Luz Direccional, Puntual y Reflector
 María Guadalupe Martínez Pavón                              318071280
-Fecha de entrega : 29 de marzo de 2025
+Fecha de entrega : 31 de marzo de 2025
 */
 
 #include <iostream>
@@ -159,9 +159,14 @@ int main()
 	Shader lightingShader("Shader/lighting.vs", "Shader/lighting.frag");
 	Shader lampShader("Shader/lamp.vs", "Shader/lamp.frag");
 	
-	Model Dog((char*)"botella/botella.obj");
+	Model Dog((char*)"Models/RedDog.obj");
 	Model Piso((char*)"Models/piso.obj");
-
+	Model florero((char*)"florero/3d-model.obj");
+	Model gabinete((char*)"gabinete/20359_Cabinet_Bookcase_v1_Texture.obj");
+	Model refri((char*)"refrigerador/11646_Refrigerator_v1_l3.obj");
+	Model table((char*)"table/10256_TV_Cabinet_v1_max2011.obj");
+	Model moon((char*)"Moon/Luna.obj");
+	Model sun((char*)"sun/Sol.obj");
 
 
 	// First, set the container's VAO (and VBO)
@@ -306,22 +311,46 @@ int main()
 
 		//Carga de modelo 
         view = camera.GetViewMatrix();	
-		model = glm::mat4(1);
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		Piso.Draw(lightingShader);
-
 
 	
 		model = glm::mat4(1);
-		model = glm::translate(model, glm::vec3(-10.0f, 1.0f, 6.5f)); // moverla hacia +Z
-		model = glm::scale(model, glm::vec3(0.2f)); // escalar si está demasiado grande o chica
-
+		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
 		glEnable(GL_BLEND);//Avtiva la funcionalidad para trabajar el canal alfa
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		/*glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 1);
+		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 0);
 	    Dog.Draw(lightingShader);
 		glDisable(GL_BLEND);  //Desactiva el canal alfa 
+		
+
+		model = glm::translate(model, glm::vec3(-20.0f, -10.0f, 0.8f));
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.035f, 0.035f, 0.035f));
+		glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+		refri.Draw(lightingShader);
+		glBindVertexArray(0);
+
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 2.0f));
+		model = glm::translate(model, glm::vec3(-250.0f, 450.0f, -40.8f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+		table.Draw(lightingShader);
+
+
+		model = glm::translate(model, glm::vec3(-70.0f, -0.2f, -1.3f));
+		model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
+		glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+		florero.Draw(lightingShader);
+
+		model = glm::translate(model, glm::vec3(65.0f, -0.5f, -1.3f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(3.5f, 3.5f, 3.5f));
+		glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+		gabinete.Draw(lightingShader);
+
+
+
 		glBindVertexArray(0);
 	
 
