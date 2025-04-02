@@ -46,11 +46,13 @@ GLfloat lastY = HEIGHT / 2.0;
 bool keys[1024];
 bool firstMouse = true;
 
-// Light attributes
-glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
+// Light attributes 
 bool active;
 float reloj = 0.0f;
 float activador = 0.0f;
+glm::vec3 lightPos(0.5f, 0.5f, 2.5f);
+glm::vec3 secondLightPos(0.8f, 0.8f, 2.5f);
+float movelightPos = 0.0f;
 
 // Positions of the point lights
 glm::vec3 pointLightPositions[] = {
@@ -226,6 +228,18 @@ int main()
 
 		GLint viewPosLoc = glGetUniformLocation(lightingShader.Program, "viewPos");
 		glUniform3f(viewPosLoc, camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
+		// Sol: se mueve de izquierda a derecha en parábola
+		lightPos.x = cos(reloj) * 10.0f;
+		lightPos.y = sin(reloj) * 10.0f;
+
+		// Luna: misma trayectoria, pero opuesta
+		secondLightPos.x = -cos(reloj) * 10.0f;
+		secondLightPos.y = -sin(reloj) * 10.0f;
+
+		GLint lightPosLoc = glGetUniformLocation(lightingShader.Program, "light.position");
+		glUniform3f(lightPosLoc, lightPos.x + movelightPos, lightPos.y + movelightPos, lightPos.z + movelightPos);
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.position"),
+			secondLightPos.x, secondLightPos.y, secondLightPos.z);
 
 
 		// Directional light
@@ -234,6 +248,20 @@ int main()
 		glUniform3f(glGetUniformLocation(lightingShader.Program, "dirLight.diffuse"), 0.05f, 0.05f, 0.05f);
 		glUniform3f(glGetUniformLocation(lightingShader.Program, "dirLight.specular"), 0.3f, 0.3f, 0.3f);
 
+		if (reloj < 3.1 && reloj > 0 && activador == 1) {
+			glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 10.0f, 5.0f, 2.0f);
+			glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.2f, 0.7f, 0.4f);
+			glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 0.3f, 0.6f, 0.4f);
+		}
+		else {
+			glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 1.5f, 1.5f, 2.0f);
+			glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.1f, 1.05f, 1.1f);
+			glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 0.4f, 0.9f, 1.0f);
+		}
+
+		glm::mat4 view = camera.GetViewMatrix();
+		glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+		glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
 		// Point light 1
 		glm::vec3 lightColor;
@@ -295,7 +323,6 @@ int main()
 		glUniform1f(glGetUniformLocation(lightingShader.Program, "material.shininess"), 128.0f);
 
 		// Create camera transformations
-		glm::mat4 view;
 		view = camera.GetViewMatrix();
 
 		// Get the uniform locations
@@ -363,6 +390,21 @@ int main()
 		viewLoc = glGetUniformLocation(lampShader.Program, "view");
 		projLoc = glGetUniformLocation(lampShader.Program, "projection");
 
+		if (activador == 1) {
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, lightPos + movelightPos);
+			model = glm::scale(model, glm::vec3(0.6f));
+			glUniformMatrix4fv(glGetUniformLocation(lampShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+			sun.Draw(lampShader);
+		}
+		else {
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, lightPos + movelightPos);
+			model = glm::scale(model, glm::vec3(0.1f));
+			glUniformMatrix4fv(glGetUniformLocation(lampShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+			moon.Draw(lampShader);
+		}
+
 		// Set matrices
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
@@ -380,6 +422,9 @@ int main()
 			glBindVertexArray(VAO);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
+
+
+
 		glBindVertexArray(0);
 
 
@@ -489,6 +534,17 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 		{
 			Light1 = glm::vec3(0);//Cuado es solo un valor en los 3 vectores pueden dejar solo una componente
 		}
+	}
+	if (reloj < 3 && (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS))
+	{
+		activador = 1.0f;
+		reloj += 0.1f;
+	}
+
+	if (reloj > 0 && (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS))
+	{
+		activador = 0.0f;
+		reloj -= 0.1f;
 	}
 }
 
