@@ -1,0 +1,67 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 28.11.2011 10:59:10
+
+newmtl Lamp_bulb_body
+	Ns 50.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.4275 0.4275 0.4275
+	Kd 0.4275 0.4275 0.4275
+	Ks 0.4500 0.4500 0.4500
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lamp_bulb_glass_2
+	Ns 30.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.8235 0.8431 0.8510
+	Kd 0.8235 0.8431 0.8510
+	Ks 0.4500 0.4500 0.4500
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lamp_bulb_filament
+	Ns 50.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.4353 0.4353 0.4353
+	Kd 0.4353 0.4353 0.4353
+	Ks 0.4500 0.4500 0.4500
+	Ke 0.0000 0.0000 0.0000
+
+newmtl Lamp_bulb_glass
+	Ns 30.0000
+	Ni 1.0100
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.8235 0.8431 0.8510
+	Kd 0.8235 0.8431 0.8510
+	Ks 0.4500 0.4500 0.4500
+	Ke 0.0000 0.0000 0.0000
+
+newmtl 11829_chandelier_v1
+	Ns 30.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 1.0000 1.0000 1.0000
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.0900 0.0900 0.0900
+	Ke 0.0000 0.0000 0.0000
+	map_Ka 11829_chandelier_v1_diffuse.JPG
+	map_Kd 11829_chandelier_v1_diffuse.JPG
+	map_Ks 11829_chandelier_v1_specular.JPG
+	map_bump 11829_chandelier_v1_bump.JPG
+	bump 11829_chandelier_v1_bump.JPG
