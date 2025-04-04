@@ -1,7 +1,7 @@
 
-/*Fuentes de Luz en OpenGL : Luz Direccional, Puntual y Reflector
+/*P9. Fuentes de Luz en OpenGL : Luz Direccional, Puntual y Reflector
 María Guadalupe Martínez Pavón                              318071280
-Fecha de entrega : 31 de marzo de 2025
+Fecha de entrega : 3 de abril de 2025
 */
 
 #include <iostream>
@@ -48,8 +48,9 @@ bool firstMouse = true;
 
 // Light attributes 
 bool active;
-bool tvLightActive = true; 
+bool tvLightActive;
 bool lampLightActive;
+bool focoLightActive;
 float reloj = 0.0f;
 float activador = 0.0f;
 glm::vec3 lightPos(0.5f, 0.5f, 2.5f);
@@ -60,9 +61,9 @@ float movelightPos = 0.0f;
 glm::vec3 pointLightPositions[] = {
 	glm::vec3(0.0f,0.0f, 0.0f),
 	glm::vec3(0.0f,0.0f, 0.0f),
-	glm::vec3(120.0f, 40.0f, 100.0f),
+	glm::vec3(- 10.0f, 10.0f, 60.8f),
 	glm::vec3(-250.0f, -290.0f, -50.0f),
-	glm::vec3(-10.0f, 10.0f, 60.8f)
+	glm::vec3(120.0f, 40.0f, 100.0f)
 };
 
 float vertices[] = {
@@ -113,6 +114,7 @@ float vertices[] = {
 
 glm::vec3 Light1 = glm::vec3(0);
 glm::vec3 Light2 = glm::vec3(0); 
+glm::vec3 LightFoco = glm::vec3(1.0f, 1.0f, 0.8f);
 
 
 // Deltatime
@@ -300,13 +302,33 @@ int main()
 		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[1].quadratic"), 0.0f);
 
 		// Point light 3
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[2].position"), pointLightPositions[2].x, pointLightPositions[2].y, pointLightPositions[2].z);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[2].ambient"), 0.0f, 0.0f, 0.0f);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[2].diffuse"), 0.0f, 0.0f, 0.0f);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[2].specular"), 0.0f, 0.0f, 0.0f);
+		glm::vec3 focoColor;
+		focoColor.x = fabs(sin(glfwGetTime() * LightFoco.x));
+		focoColor.y = fabs(sin(glfwGetTime() * LightFoco.y));
+		focoColor.z = fabs(sin(glfwGetTime() * LightFoco.z));
+
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[2].position"),
+			pointLightPositions[2].x,
+			pointLightPositions[2].y,
+			pointLightPositions[2].z);
+
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[2].ambient"),
+			focoColor.x * 0.2f,
+			focoColor.y * 0.2f,
+			focoColor.z * 0.2f);
+
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[2].diffuse"),
+			focoColor.x,
+			focoColor.y,
+			focoColor.z);
+
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[2].specular"),
+			1.0f, 1.0f, 1.0f);
+
 		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[2].constant"), 1.0f);
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[2].linear"), 0.0f);
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[2].quadratic"), 0.0f);
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[2].linear"), 0.05f);
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[2].quadratic"), 0.02f);
+
 
 		// Point light 4
 		// Lámpara - Luz animada en pointLight[3]
@@ -324,7 +346,7 @@ int main()
 
 
 		// Point light 5
-		if (tvLightActive) {
+		if (focoLightActive) {
 			glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[4].ambient"), 0.2f, 0.2f, 0.3f);
 			glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[4].diffuse"), 0.6f, 0.7f, 0.9f);
 			glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[4].specular"), 0.9f, 0.9f, 1.0f);
@@ -603,7 +625,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 
 	if (keys[GLFW_KEY_M])
 	{
-		tvLightActive = !tvLightActive;
+		focoLightActive = !focoLightActive;
 	}
 
 	if (reloj < 3 && (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS))
@@ -617,6 +639,18 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 		activador = 0.0f;
 		reloj -= 0.1f;
 	}
+
+	if (keys[GLFW_KEY_V])
+	{
+		tvLightActive = !tvLightActive;
+
+		if (tvLightActive)
+			LightFoco = glm::vec3(1.0f, 1.0f, 0.8f);  // luz encendida
+		else
+			LightFoco = glm::vec3(0.0f);              // luz apagada
+
+	}
+
 
 }
 
