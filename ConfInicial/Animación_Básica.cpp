@@ -110,6 +110,11 @@ bool ballGoingUp = true;
 float ballMinY = 0.0f;
 float ballMaxY = 2.0f;
 
+float rotDog = 0; 
+float dogy = 0.0f;
+bool dogymove = true;
+
+
 // Deltatime
 GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
 GLfloat lastFrame = 0.0f;  	// Time of last frame
@@ -292,6 +297,8 @@ int main()
 		Piso.Draw(lightingShader);
 
 		model = glm::mat4(1);
+		model = glm::translate(model, glm::vec3(0.0f, dogy, 0.0f));
+		model = glm::rotate(model, glm::radians(rotDog), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 0);
 		Dog.Draw(lightingShader);
@@ -299,8 +306,8 @@ int main()
 		model = glm::mat4(1);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		model = glm::translate(model, glm::vec3(0.0f, ballY, 0.0f));
 		model = glm::rotate(model, glm::radians(rotBall), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(ballY, 0.0f, 0.0f));
 		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 1);
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		Ball.Draw(lightingShader);
@@ -324,12 +331,12 @@ int main()
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		// Draw the light object (using light's vertex attributes)
 		
-			model = glm::mat4(1);
-			model = glm::translate(model, pointLightPositions[0]);
-			model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-			glBindVertexArray(VAO);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
+		model = glm::mat4(1);
+		model = glm::translate(model, pointLightPositions[0]);
+		model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 		
 		glBindVertexArray(0);
 
@@ -447,6 +454,12 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 		AnimBall = !AnimBall;
 		
 	}
+
+	if (keys[GLFW_KEY_M])
+	{
+		dogymove = !dogymove;
+
+	}
 }
 void Animation() {
 		if (AnimBall) {
@@ -464,6 +477,22 @@ void Animation() {
 					ballGoingUp = true;
 			}
 		}
+
+		//if (dogymove) {
+		//	// Movimiento vertical de la pelota
+		//	float speed = 0.01f;
+
+		//	if (ballGoingUp) {
+		//		ballY += speed;
+		//		if (ballY >= ballMaxY)
+		//			ballGoingUp = false;
+		//	}
+		//	else {
+		//		ballY -= speed;
+		//		if (ballY <= ballMinY)
+		//			ballGoingUp = true;
+		//	}
+		//}
 	}
 
 
