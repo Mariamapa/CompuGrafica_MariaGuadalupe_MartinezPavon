@@ -103,17 +103,23 @@ float vertices[] = {
 
 glm::vec3 Light1 = glm::vec3(0);
 //Anim
-float rotBall = 0;
-bool AnimBall = false;
-float ballY = 0.0f;         
-bool ballGoingUp = true;
-float ballMinY = 0.0f;
-float ballMaxY = 2.0f;
+// Variables del perro 
+float rotDog = 0;           // Ángulo de rotación para el perro
+float radius = 1.5f;        // Radio del movimiento circular (tanto para el perro como la pelota)
+float dogX = 0.0f;          // Posición en X del perro
+float dogZ = 0.0f;          // Posición en Z del perro
+float dogY = 0.0f;          // El perro no cambia de altura, permanece en el piso     
+bool AnimDog = false;
+bool jumping = false;       // Controla si el perro está saltando
+float jumpHeight = 0.0f;
 
-float rotDog = 0; 
-float dogy = 0.0f;
-bool dogymove = true;
-
+// Variables de la pelota
+float rotBall = 0;          // Ángulo de rotación para la pelota
+float ballY = 0.5f;         // Altura constante de la pelota (flotando arriba)
+bool AnimBall = false;      // Controla la animación de la pelota
+bool ballGoingUp = true;    // Si la pelota va hacia arriba o abajo 
+float ballX = 0.0f; 
+float ballZ = 0.0f; 
 
 // Deltatime
 GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
@@ -296,18 +302,17 @@ int main()
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		Piso.Draw(lightingShader);
 
-		model = glm::mat4(1);
-		model = glm::translate(model, glm::vec3(0.0f, dogy, 0.0f));
-		model = glm::rotate(model, glm::radians(rotDog), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(dogX, dogY, dogZ)); // Usando dogX, dogY (siempre 0) y dogZ
+		model = glm::rotate(model, glm::radians(rotDog), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación del perro
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 0);
 		Dog.Draw(lightingShader);
 
 		model = glm::mat4(1);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		model = glm::translate(model, glm::vec3(ballX, ballY, ballZ)); 
 		model = glm::rotate(model, glm::radians(rotBall), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::translate(model, glm::vec3(ballY, 0.0f, 0.0f));
 		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 1);
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		Ball.Draw(lightingShader);
@@ -449,53 +454,60 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 			Light1 = glm::vec3(0);//Cuado es solo un valor en los 3 vectores pueden dejar solo una componente
 		}
 	}
-	if (keys[GLFW_KEY_N])
-	{
-		AnimBall = !AnimBall;
-		
+	if (key == GLFW_KEY_N && action == GLFW_PRESS) {
+		AnimBall = !AnimBall;  // Alterna el estado de la animación de la pelota
 	}
 
-	if (keys[GLFW_KEY_M])
-	{
-		dogymove = !dogymove;
-
+	if (key == GLFW_KEY_M && action == GLFW_PRESS) {
+		AnimDog = !AnimDog;   // Alterna el estado de la animación del perro
 	}
+
 }
 void Animation() {
-		if (AnimBall) {
-			// Movimiento vertical de la pelota
-			float speed = 0.01f;
+		// El movimiento de la pelota es ahora solo circular, sin oscilación vertical
+	if (AnimBall) {
+		float speed = 0.5f;  // Velocidad de movimiento para la pelota
 
-			if (ballGoingUp) {
-				ballY += speed;
-				if (ballY >= ballMaxY)
-					ballGoingUp = false;
-			}
-			else {
-				ballY -= speed;
-				if (ballY <= ballMinY)
-					ballGoingUp = true;
-			}
+		// Movimiento circular para la pelota (hacia la izquierda)
+		rotBall -= speed; // Reducir el ángulo para que la pelota se mueva en sentido contrario a las agujas del reloj
+		if (rotBall <= 360.0f) {
+			rotBall += 360.0f; // Mantener el ángulo dentro de un rango de 0 a 360 grados
+		}
+		ballX = radius * cos(glm::radians(rotBall)); // Movimiento circular en X
+		ballZ = radius * sin(glm::radians(rotBall));
+
+	}
+		// Movimiento circular para el perrito (en el plano X-Z)
+	if (AnimDog) {
+		float speed = 0.5f;  // Velocidad de movimiento para el perro
+
+		// Movimiento circular para el perrito (hacia la derecha)
+		rotDog += speed; // Incrementar el ángulo para el movimiento circular
+
+		if (rotDog >= 0.0f) {
+			rotDog -= 360.0f; // Mantener el ángulo dentro de un rango de 0 a 360 grados
 		}
 
-		//if (dogymove) {
-		//	// Movimiento vertical de la pelota
-		//	float speed = 0.01f;
+		// La posición en X y Z del perro es una función de las funciones trigonométricas
+		dogX = radius * cos(glm::radians(rotDog)); // Movimiento circular en X
+		dogZ = radius * sin(glm::radians(rotDog)); // Movimiento circular en Z
+		dogY = 0.0f;
 
-		//	if (ballGoingUp) {
-		//		ballY += speed;
-		//		if (ballY >= ballMaxY)
-		//			ballGoingUp = false;
-		//	}
-		//	else {
-		//		ballY -= speed;
-		//		if (ballY <= ballMinY)
-		//			ballGoingUp = true;
-		//	}
-		//}
+		if (jumping) {
+			jumpHeight += 0.05f; // Aumentar la altura para el salto
+			if (jumpHeight >= 1.0f) {
+				jumping = false; // El perro empieza a caer después de alcanzar la altura máxima
+			}
+		}
+		else if (jumpHeight > 0.0f) {
+			jumpHeight -= 0.05f; // El perro baja después de alcanzar la altura máxima
+		}
 	}
+	
 
-
+	// La posición del perro en Y es ajustada por el salto
+	dogY = jumpHeight;
+}
 
 void MouseCallback(GLFWwindow *window, double xPos, double yPos)
 {
