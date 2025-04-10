@@ -113,6 +113,8 @@ bool AnimDog = false;
 bool jumping = false;       // Controla si el perro está saltando
 float jumpHeight = 0.0f;
 
+
+
 // Variables de la pelota
 float rotBall = 0;          // Ángulo de rotación para la pelota
 float ballY = 0.5f;         // Altura constante de la pelota (flotando arriba)
@@ -120,6 +122,9 @@ bool AnimBall = false;      // Controla la animación de la pelota
 bool ballGoingUp = true;    // Si la pelota va hacia arriba o abajo 
 float ballX = 0.0f; 
 float ballZ = 0.0f; 
+bool ballInAir = false;
+float ballVelocityY = 0.0f;
+
 
 // Deltatime
 GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
@@ -463,10 +468,14 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 	}
 
 }
+
+const float gravity = -0.05f;  // Gravedad que afecta a la pelota
+const float bounceFactor = 0.6f;
+
 void Animation() {
 		// El movimiento de la pelota es ahora solo circular, sin oscilación vertical
 	if (AnimBall) {
-		float speed = 0.5f;  // Velocidad de movimiento para la pelota
+		float speed = 0.3f;  // Velocidad de movimiento para la pelota
 
 		// Movimiento circular para la pelota (hacia la izquierda)
 		rotBall -= speed; // Reducir el ángulo para que la pelota se mueva en sentido contrario a las agujas del reloj
@@ -476,6 +485,21 @@ void Animation() {
 		ballX = radius * cos(glm::radians(rotBall)); // Movimiento circular en X
 		ballZ = radius * sin(glm::radians(rotBall));
 
+		if (ballInAir) {
+			ballVelocityY += gravity;  // Aplica la gravedad
+			ballY += ballVelocityY;    // Actualiza la posición Y de la pelota
+
+			// Si la pelota toca el suelo (y su velocidad es negativa), hace el rebote
+			if (ballY <= 0.5f) {
+				ballY = 0.5f;  // Restablece la posición Y a 0.5 (su altura inicial)
+				ballVelocityY = -ballVelocityY * bounceFactor;  // Invertir la velocidad Y y aplicar el factor de rebote
+				if (std::abs(ballVelocityY) < 0.1f) {  // Si la velocidad es muy pequeña, detener el rebote
+					ballInAir = false;  // Deja de rebotar
+					ballVelocityY = 0.0f;
+				}
+			}
+		}
+
 	}
 		// Movimiento circular para el perrito (en el plano X-Z)
 	if (AnimDog) {
@@ -484,14 +508,15 @@ void Animation() {
 		// Movimiento circular para el perrito (hacia la derecha)
 		rotDog += speed; // Incrementar el ángulo para el movimiento circular
 
-		if (rotDog >= 0.0f) {
+		if (rotDog >= 360.0f) {
 			rotDog -= 360.0f; // Mantener el ángulo dentro de un rango de 0 a 360 grados
 		}
 
 		// La posición en X y Z del perro es una función de las funciones trigonométricas
 		dogX = radius * cos(glm::radians(rotDog)); // Movimiento circular en X
-		dogZ = radius * sin(glm::radians(rotDog)); // Movimiento circular en Z
-		dogY = 0.0f;
+		dogZ = radius * sin(glm::radians(rotDog)); // Movimiento circular en Z	dogY = 0.0f;
+		float walkingCycle = sin(glfwGetTime() * 10.0f); // Sinusoidal para simular el caminar
+		dogY = 0.5f * walkingCycle;
 
 		if (jumping) {
 			jumpHeight += 0.05f; // Aumentar la altura para el salto
@@ -507,6 +532,15 @@ void Animation() {
 
 	// La posición del perro en Y es ajustada por el salto
 	dogY = jumpHeight;
+
+	float distance = glm::sqrt(glm::pow(dogX - ballX, 2) + glm::pow(dogZ - ballZ, 2));  // Distancia entre la pelota y el perro
+
+	if (distance < 0.2f && !jumping) {  // Si la distancia es menor que 0.2, el perro "lanza" la pelota
+		jumping = true;  // El perro empieza a saltar
+		ballInAir = true;  // La pelota comienza a moverse en el aire
+        ballVelocityY = 0.4f; 
+		std::cout << "¡El perro está lanzando la pelota!" << std::endl;
+	}
 }
 
 void MouseCallback(GLFWwindow *window, double xPos, double yPos)
