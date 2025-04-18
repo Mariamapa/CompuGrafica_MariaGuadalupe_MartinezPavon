@@ -1,5 +1,5 @@
-//P10. Animación Básica en OpenGL                                 María Guadalupe Martínez Pavón
-//Fecha de entrega : 11 de abril 2025                                       318071280
+//Animación por máquina de estados                                         María Guadalupe Martínez Pavón
+//Fecha de entrega : 18 de abril 2025                                                          318071280
 
 #include <iostream>
 #include <cmath>
@@ -103,27 +103,19 @@ float vertices[] = {
 
 glm::vec3 Light1 = glm::vec3(0);
 //Anim
-// Variables del perro 
-float rotDog = 0;           // Ángulo de rotación para el perro
-float radius = 1.5f;        // Radio del movimiento circular (tanto para el perro como la pelota)
-float dogX = 0.0f;          // Posición en X del perro
-float dogZ = 0.0f;          // Posición en Z del perro
-float dogY = 0.0f;          // El perro no cambia de altura, permanece en el piso     
+float rotBall = 0.0f;
+bool AnimBall = false;
 bool AnimDog = false;
-bool jumping = false;       // Controla si el perro está saltando
-float jumpHeight = 0.0f;
+float rotDog = 0.0f;
+int dogAnim = 0;
+float FLegs = 0.0f;
+float RLegs = 0.0f;
+float head = 0.0f;
+float tail = 0.0f;
+glm::vec3 dogPos (0.0f,0.0f,0.0f);
+float dogRot = 0.0f;
+bool step = false;
 
-
-
-// Variables de la pelota
-float rotBall = 0;          // Ángulo de rotación para la pelota
-float ballY = 0.5f;         // Altura constante de la pelota (flotando arriba)
-bool AnimBall = false;      // Controla la animación de la pelota
-bool ballGoingUp = true;    // Si la pelota va hacia arriba o abajo 
-float ballX = 0.0f; 
-float ballZ = 0.0f; 
-bool ballInAir = false;
-float ballVelocityY = 0.0f;
 
 
 // Deltatime
@@ -142,7 +134,7 @@ int main()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);*/
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "P10. Animacion basica. Maria Guadalupe Martinez Pavon", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Animacion maquina de estados. Maria Guadalupe Martinez Pavon", nullptr, nullptr);
 
 	if (nullptr == window)
 	{
@@ -181,7 +173,13 @@ int main()
 	Shader lampShader("Shader/lamp.vs", "Shader/lamp.frag");
 	
 	//models
-	Model Dog((char*)"Models/RedDog.obj");
+	Model DogBody((char*)"Models/DogBody.obj");
+	Model HeadDog((char*)"Models/HeadDog.obj");
+	Model DogTail((char*)"Models/TailDog.obj");
+	Model F_RightLeg((char*)"Models/F_RightLegDog.obj");
+	Model F_LeftLeg((char*)"Models/F_LeftLegDog.obj");
+	Model B_RightLeg((char*)"Models/B_RightLegDog.obj");
+	Model B_LeftLeg((char*)"Models/B_LeftLegDog.obj");
 	Model Piso((char*)"Models/piso.obj");
 	Model Ball((char*)"Models/ball.obj");
 
@@ -230,7 +228,7 @@ int main()
 		glEnable(GL_DEPTH_TEST);
 
 		
-		
+		glm::mat4 modelTemp = glm::mat4(1.0f); //Temp
 		
 	
 
@@ -307,22 +305,62 @@ int main()
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		Piso.Draw(lightingShader);
 
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(dogX, dogY, dogZ)); // Usando dogX, dogY (siempre 0) y dogZ
-		model = glm::rotate(model, glm::radians(rotDog), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotación del perro
+		model = glm::mat4(1);
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		Dog.Draw(lightingShader);
+		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 0);
+		//Body
+		modelTemp= model = glm::translate(model, dogPos);
+		modelTemp= model = glm::rotate(model, glm::radians(dogRot), glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		DogBody.Draw(lightingShader);
+		//Head
+		model = modelTemp;
+		model = glm::translate(model, glm::vec3(0.0f, 0.093f, 0.208f));
+		model = glm::rotate(model, glm::radians(head), glm::vec3(0.0f, 0.0f, 1.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		HeadDog.Draw(lightingShader);
+		//Tail 
+		model = modelTemp;
+		model = glm::translate(model, glm::vec3(0.0f, 0.026f, -0.288f));
+		model = glm::rotate(model, glm::radians(tail), glm::vec3(0.0f, 0.0f, -1.0f)); 
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model)); 
+		DogTail.Draw(lightingShader);
+		//Front Left Leg
+		model = modelTemp;
+		model = glm::translate(model, glm::vec3(0.112f, -0.044f, 0.074f));
+		model = glm::rotate(model, glm::radians(FLegs), glm::vec3(-1.0f, 0.0f, 0.0f)); 
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		F_LeftLeg.Draw(lightingShader);
+		//Front Right Leg
+		model = modelTemp; 
+		model = glm::translate(model, glm::vec3(-0.111f, -0.055f, 0.074f));
+		model = glm::rotate(model, glm::radians(FLegs), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		F_RightLeg.Draw(lightingShader);
+		//Back Left Leg
+		model = modelTemp; 
+		model = glm::translate(model, glm::vec3(0.082f, -0.046, -0.218)); 
+		model = glm::rotate(model, glm::radians(RLegs), glm::vec3(1.0f, 0.0f, 0.0f)); 
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model)); 
+		B_LeftLeg.Draw(lightingShader);
+		//Back Right Leg
+		model = modelTemp; 
+		model = glm::translate(model, glm::vec3(-0.083f, -0.057f, -0.231f));
+		model = glm::rotate(model, glm::radians(RLegs), glm::vec3(-1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		B_RightLeg.Draw(lightingShader); 
+
 
 		model = glm::mat4(1);
-		glEnable(GL_BLEND);
+		glEnable(GL_BLEND);//Avtiva la funcionalidad para trabajar el canal alfa
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		model = glm::translate(model, glm::vec3(ballX, ballY, ballZ)); 
-		model = glm::rotate(model, glm::radians(rotBall), glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 1);
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		Ball.Draw(lightingShader);
-		glDisable(GL_BLEND);
-
+		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 1);
+		model = glm::rotate(model, glm::radians(rotBall), glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+	    Ball.Draw(lightingShader); 
+		glDisable(GL_BLEND);  //Desactiva el canal alfa 
+		glBindVertexArray(0);
 	
 
 		// Also draw the lamp object, again binding the appropriate shader
@@ -341,12 +379,12 @@ int main()
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		// Draw the light object (using light's vertex attributes)
 		
-		model = glm::mat4(1);
-		model = glm::translate(model, pointLightPositions[0]);
-		model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+			model = glm::mat4(1);
+			model = glm::translate(model, pointLightPositions[0]);
+			model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+			glBindVertexArray(VAO);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
 		
 		glBindVertexArray(0);
 
@@ -451,7 +489,7 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 		active = !active;
 		if (active)
 		{
-			Light1 = glm::vec3(1.0f, 1.0f, 0.0f);
+			Light1 = glm::vec3(0.2f, 0.8f, 1.0f);
 			
 		}
 		else
@@ -459,82 +497,60 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 			Light1 = glm::vec3(0);//Cuado es solo un valor en los 3 vectores pueden dejar solo una componente
 		}
 	}
-	if (key == GLFW_KEY_N && action == GLFW_PRESS) {
-		AnimBall = !AnimBall;  // Alterna el estado de la animación de la pelota
-	}
-
-	if (key == GLFW_KEY_M && action == GLFW_PRESS) {
-		AnimDog = !AnimDog;   // Alterna el estado de la animación del perro
-	}
-
-}
-
-const float gravity = -0.06f;  // Gravedad que afecta a la pelota
-const float bounceFactor = 0.6f;
-
-void Animation() {
-		// El movimiento de la pelota es ahora solo circular
-	if (AnimBall) {
-		float speed = 0.5f;  
-
-		rotBall -= speed; 
-		if (rotBall <= 360.0f) {
-			rotBall += 360.0f; 
-		}
-		ballX = radius * cos(glm::radians(rotBall)); 
-		ballZ = radius * sin(glm::radians(rotBall));
-
-		if (ballInAir) {
-			ballVelocityY += gravity;  // Aplica la gravedad
-			ballY += ballVelocityY;    // Actualiza la posición Y de la pelota
-
-			// Si la pelota toca el suelo (y su velocidad es negativa), hace el rebote
-			if (ballY <= 0.5f) {
-				ballY = 0.5f;  // Restablece la posición Y a 0.5 (su altura inicial)
-				ballVelocityY = -ballVelocityY * bounceFactor;  
-				if (std::abs(ballVelocityY) < 0.1f) {  
-					ballInAir = false;  // Deja de rebotar
-					ballVelocityY = 0.0f;
-				}
-			}
-		}
-
-	}
+	if (keys[GLFW_KEY_N])
+	{
+		AnimBall = !AnimBall;
 		
-	if (AnimDog) {
-		float speed = 45.0f * deltaTime; // ahora usa deltaTime
-		rotDog += speed;
-		if (rotDog >= 360.0f) rotDog -= 360.0f;
-
-		dogX = radius * cos(glm::radians(rotDog));
-		dogZ = radius * sin(glm::radians(rotDog));
-
-		float walkingCycle = fabs(sin(glfwGetTime() * 6.0f));
-		dogY = 0.05f * walkingCycle + jumpHeight;
-
-		if (jumping) {
-			jumpHeight += 0.05f;
-			if (jumpHeight >= 1.0f) {
-				jumping = false;
-			}
-		}
-		else if (jumpHeight > 0.0f) {
-			jumpHeight -= 0.05f;
-		}
 	}
 
+	if (keys[GLFW_KEY_B])
+	{
+		dogAnim = 1;
+
+	}
 	
+}
+void Animation() {
+	if (AnimBall)
+	{
+		rotBall += 0.4f;
+		//printf("%f", rotBall);
+	}
+	
+	if (AnimDog)
+	{
+		rotDog -= 0.6f;
+		//printf("%f", rotBall);
+	}
+	
+	if (dogAnim == 1) { //walk animation
+		if (!step) { //State 1
+			RLegs += 0.3f;
+			FLegs += 0.3f;
+			head += 0.3f;
+			tail += 0.3f; 
+			if (RLegs > 15.0f) //condition
+				step = true;
+		}
+		else
+		{
+			RLegs -= 0.3f;
+			FLegs -= 0.3f;
+			head -= 0.3f;
+			tail -= 0.3f;
 
-	// La posición del perro en Y es ajustada por el salto
-	dogY = jumpHeight;
+			if (RLegs < -15.0f) //condition
+				step = false;
+		}
 
-	float distance = glm::sqrt(glm::pow(dogX - ballX, 2) + glm::pow(dogZ - ballZ, 2));  // Distancia entre la pelota y el perro
-
-	if (distance < 0.1f && !jumping) {  // Si la distancia es menor que 0.2, el perro "lanza" la pelota
-		jumping = true;  // El perro empieza a saltar
-		ballInAir = true; 
-        ballVelocityY = 0.5f; 
-		std::cout << "¡El perro está lanzando la pelota!" << std::endl;
+		if (dogPos.z < 2.0f) {
+			dogPos.z += 0.001f;
+		}
+		else {
+			dogAnim = 0; // detiene la animación
+			RLegs = FLegs = head = tail = 0.0f; 
+		}
+		printf("%f", RLegs);
 	}
 }
 
