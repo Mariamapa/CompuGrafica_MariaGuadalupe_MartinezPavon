@@ -107,7 +107,20 @@ float rotBall = 0.0f;
 bool AnimBall = false;
 bool AnimDog = false;
 float rotDog = 0.0f;
-int dogAnim = 0;
+enum class DogState {
+	IDLE,
+	FORWARD_Z,
+	TURN_RIGHT_1,
+	FORWARD_X,
+	TURN_RIGHT_2,
+	FORWARD_NEG_Z,
+	TURN_RIGHT_3,
+	CURVE_SEGMENT_1,     // Subida leve en Z con X negativa
+	CURVE_SEGMENT_2,     // Recto en -X para llegar al origen
+	FORWARD_BACK_X,
+	DONE
+};
+DogState dogState = DogState::IDLE;
 float FLegs = 0.0f;
 float RLegs = 0.0f;
 float head = 0.0f;
@@ -503,56 +516,113 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 		
 	}
 
-	if (keys[GLFW_KEY_B])
-	{
-		dogAnim = 1;
-
-	}
-	
+	if (keys[GLFW_KEY_B]) {
+		dogState = DogState::FORWARD_Z;
+	}	
 }
+
 void Animation() {
 	if (AnimBall)
 	{
 		rotBall += 0.4f;
 		//printf("%f", rotBall);
 	}
-	
-	if (AnimDog)
-	{
-		rotDog -= 0.6f;
-		//printf("%f", rotBall);
-	}
-	
-	if (dogAnim == 1) { //walk animation
-		if (!step) { //State 1
-			RLegs += 0.3f;
-			FLegs += 0.3f;
-			head += 0.3f;
-			tail += 0.3f; 
-			if (RLegs > 15.0f) //condition
-				step = true;
-		}
-		else
-		{
-			RLegs -= 0.3f;
-			FLegs -= 0.3f;
-			head -= 0.3f;
-			tail -= 0.3f;
-
-			if (RLegs < -15.0f) //condition
-				step = false;
+		// Movimiento de patas
+		if (dogState != DogState::IDLE) {
+			if (!step) {
+				RLegs += 0.3f; FLegs += 0.3f; head += 0.3f; tail += 0.3f;
+				if (RLegs > 15.0f) step = true;
+			}
+			else {
+				RLegs -= 0.3f; FLegs -= 0.3f; head -= 0.3f; tail -= 0.3f;
+				if (RLegs < -15.0f) step = false;
+			}
 		}
 
-		if (dogPos.z < 2.0f) {
-			dogPos.z += 0.001f;
+		switch (dogState) {
+		case DogState::FORWARD_Z:
+			if (dogPos.z < 2.0f) {
+				dogPos.z += 0.01f;
+			}
+			else {
+				dogState = DogState::TURN_RIGHT_1;
+			}
+			break;
+
+		case DogState::TURN_RIGHT_1:
+			if (dogRot < 90.0f) {
+				dogRot += 0.5f;
+			}
+			else {
+				dogRot = 90.0f;
+				dogState = DogState::FORWARD_X;
+			}
+			break;
+
+		case DogState::FORWARD_X:
+			if (dogPos.x < 2.0f) {
+				dogPos.x += 0.01f;
+			}
+			else {
+				dogState = DogState::TURN_RIGHT_2;
+			}
+			break;
+
+		case DogState::TURN_RIGHT_2:
+			if (dogRot < 180.0f) {
+				dogRot += 0.5f;
+			}
+			else {
+				dogRot = 180.0f;
+				dogState = DogState::FORWARD_NEG_Z;
+			}
+			break;
+
+		case DogState::FORWARD_NEG_Z:
+			if (dogPos.z > -2.0f) {
+				dogPos.z -= 0.01f;
+			}
+			else {
+				dogState = DogState::TURN_RIGHT_3;
+			}
+			break;
+
+		case DogState::TURN_RIGHT_3:
+			if (dogRot < 270.0f) { // desde 180° a 270° = giro hacia izq
+				dogRot += 0.5f;
+			}
+			else {
+				dogRot = 270.0f;
+				dogState = DogState::CURVE_SEGMENT_1;
+			}
+			break;
+
+		case DogState::CURVE_SEGMENT_1:
+			if (dogPos.z < 1.0f) {
+				dogPos.z += 0.01f;       // leve subida
+				dogPos.x -= 0.007f;      // se inclina a la izquierda
+			}
+			else {
+				dogState = DogState::CURVE_SEGMENT_2;
+			}
+			break;
+
+		case DogState::CURVE_SEGMENT_2:
+			if (dogPos.x > 0.0f) {
+				dogPos.x -= 0.01f;
+			}
+			else {
+				dogState = DogState::DONE; // Finaliza recorrido
+			}
+			break;
+
+		 case DogState::DONE:
+			dogRot = 0.0f;   // Lo orienta al frente
+			dogState = DogState::IDLE; // Opcional: lo detiene completamente
+			break;
+
 		}
-		else {
-			dogAnim = 0; // detiene la animación
-			RLegs = FLegs = head = tail = 0.0f; 
-		}
-		printf("%f", RLegs);
 	}
-}
 
 void MouseCallback(GLFWwindow *window, double xPos, double yPos)
 {
