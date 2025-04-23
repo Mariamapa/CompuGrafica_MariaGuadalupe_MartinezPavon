@@ -1,5 +1,5 @@
-//Animación por máquina de estados                                         María Guadalupe Martínez Pavón
-//Fecha de entrega : 18 de abril 2025                                                          318071280
+//P11. Animación por máquina de estados                                         María Guadalupe Martínez Pavón
+//Fecha de entrega : 23 de abril 2025                                                          318071280
 
 #include <iostream>
 #include <cmath>
@@ -115,8 +115,8 @@ enum class DogState {
 	TURN_RIGHT_2,
 	FORWARD_NEG_Z,
 	TURN_RIGHT_3,
-	CURVE_SEGMENT_1,     // Subida leve en Z con X negativa
-	CURVE_SEGMENT_2,     // Recto en -X para llegar al origen
+	CURVE_SEGMENT_1,     
+	CURVE_SEGMENT_2,     
 	FORWARD_BACK_X,
 	DONE
 };
@@ -147,7 +147,7 @@ int main()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);*/
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Animacion maquina de estados. Maria Guadalupe Martinez Pavon", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "P11.Animacion maquina de estados. Maria Guadalupe Martinez Pavon", nullptr, nullptr);
 
 	if (nullptr == window)
 	{
